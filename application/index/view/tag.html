@@ -1,0 +1,94 @@
+{extend name="index"}
+{block name="content"}
+<div class="container">
+    <div class="row">
+        <div class="col col-md-9 col-sm-12 list">
+            {volist name="posts" id="post" empty="<h1>抱歉，暂无博文</h1>"}
+                <article>
+                    <section>
+                        <header>
+                            <h1>
+                                <a href="/post/{$post.id}">{$post.title}</a>
+                                <span class="fr action">
+                                    {if(session('user')!==null && session('user.id')===$post.user.id)}
+                                    <div class="pull-right">
+                                        <a href="/edit/post/{$post.id}"><i class="icon-pencil"></i>编辑</a> &nbsp;<a class="del" href="/del/post/{$post.id}"><i class="icon-remove"></i>删除</a>
+                                    </div>
+                                    {/if}
+                                </span>
+                            </h1>
+                            <p>
+                                <i class="icon icon-tag"></i>
+                                {volist name="post->tags" id="tag" length="4" empty="<span class='label label-danger'>暂无标签</span>"}
+                                <a href="/tag/{$tag.id}" class="label label-success">{$tag.name}</a>
+                                {/volist}
+                                <span class="fr"><a href="#" class="text-muted"><i class="icon-comments"></i> 243</a></span>
+                            </p>
+                        </header>
+                        <h3>
+                            摘要：{if($post.intro!==null)}
+                                {$post.intro}
+                                {else/}
+                                暂无摘要
+                                {/if}
+                        </h3>
+                        <!-- <section>
+                            {$post.content}
+                        </section> -->
+                        <footer>
+                            <p>
+                                本文由<a href="/blog/{$post.user.id}">{$post.user.name}</a> 发布于：{$post.update_time}
+                                <span class="fr">若需转载，请征得作者同意</span>
+                            </p>
+                        </footer>
+                    </section>
+                </article>
+            {/volist}
+        </div>
+        <div class="col col-md-3 col-sm-12 sider">
+            {if(session('user')!==null)}
+            <div class="panel panel-primary profile">
+                <div class="panel-heading">
+                    我的资料 <span class="fr"><a href="/profile" class="btn btn-success btn-sm">编辑</a></span>
+                </div>
+                <div class="panel-body">
+                    {if(session('user.pic') === null)}
+                    <img src="__IMG__/pic.jpg" alt="示例头像">
+                    {else/}
+                    <img src="{:session('user.pic')}" alt="{:session('user.name')}">
+                    {/if}
+                    <h3>昵称: {:session('user,name')}</h3>
+                    <p>电子邮箱: {:session('user.email')}</p>
+                </div>
+            </div>
+            {/if}
+            <!--<div class="panel panel-info">-->
+                <!--<div class="panel-heading">-->
+                    <!--近期文章-->
+                <!--</div>-->
+                <!--<div class="panel-body">-->
+                    <!--<section class="items">-->
+                        <!--{volist name="posts" id="post" length="7" empty="<h3>抱歉，暂无文章</h3>"}-->
+                        <!--<div class="item">-->
+                            <!--<a href="/post/{$post.id}">{$post.title}</a>-->
+                        <!--</div>-->
+                        <!--{/volist}-->
+                    <!--</section>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    热门标签
+                </div>
+                <div class="panel-body">
+                    {volist name="tags" id="tag" length="39" empty="<h3>抱歉，暂无标签</h3>"}
+                    <div class="item">
+                        <a href="/tag/{$tag.id}" class="label label-success">{$tag.name}</a>
+                    </div>
+                    {/volist}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

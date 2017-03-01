@@ -1,0 +1,235 @@
+{extend name="index"}
+{block name="link"}
+<link rel="stylesheet" href="__LIB__/chosen/chosen.css">
+<link href="__LIB__/quill/quill.snow.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css">
+{/block}
+{block name="content"}
+<div class="container postForm">
+    <!-- <div class="row">
+        <div class="col col-sm-12 col-md-8 col-md-offset-2"> -->
+            <!-- <div class="form-horizontal"> -->
+            <h1>编辑文章</h1>
+            {if($post===null)}
+            <div class="row">
+                <div class="col col-xs-12 col-sm-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><b>标题</b></span>
+                        <input type="text" name="title" class="form-control" id="title" placeholder="请输入文章标题" required />
+                    </div>
+                </div>
+                <div class="col col-xs-12 col-sm-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><b>标签</b></span>
+                        <select name="tags" id="tags" data-placeholder="选择一些合适的标签..." class="chosen-select form-control" tabindex="1" multiple=""  style="width:100%;">
+                            {volist name="tags" id="tag" empty="<option value="">暂无标签</option>"}
+                            <option value="{$tag.id}">{$tag.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="col col-xs-12 col-sm-4">
+                    <div class="input-group">
+                    <span class="input-group-addon"><b>封面图</b></span>
+                    <span class="input-group-addon">
+                        <input type="file" name="image" />
+                    </span>
+                    <span class="input-group-addon">
+                        <input type="submit" value="上传" /> 
+                    </span>
+                        <!-- <form action="/index/index/upload" enctype="multipart/form-data" method="post"> -->
+                        <!-- </form>  -->
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-sm-12">
+                    <h3>文章摘要：</h3>
+                    <textarea name="intro" id="intro" class="form-control" rows="3" placeholder="请输入文章摘要"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-sm-12">
+                <h3>文章内容：</h3>
+                    <!-- 创建文本编辑器 -->
+                    <div id="editor">
+                      <p>Hello World!</p>
+                    </div> 
+                </div>
+            </div>
+            <div class="row btnRow">
+                <div class="col col-xs-12 col-sm-8">
+                    <button type="submit" id="postBtn" class="btn btn-primary" onclick="save()">发布文章</button>
+                </div>
+                <div class="col col-xs-12 col-sm-4">
+                    <a class="btn btn-default" href="/blog">回到我的博客</a>
+                </div>
+            </div>
+            {else/}
+            <div class="row">
+                <div class="col col-xs-12 col-sm-5">
+                    <div class="input-group">
+                        <span class="input-group-addon"><b>标题</b></span>
+                        <input type="text" name="title" class="form-control" id="title" placeholder="请输入文章标题" value="{$post.title}" required />
+                    </div>
+                </div>
+                <div class="col col-xs-12 col-sm-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><b>标签</b></span>
+                        <select name="tags" id="tags" data-placeholder="选择一些合适的标签..." class="chosen-select form-control" tabindex="1" multiple=""  style="width:100%;">
+                            {volist name="post->tags" id="postTag"}
+                            <option value="{$postTag.id}" selected>{$postTag.name}</option>
+                            {/volist}
+                            {volist name="tags" id="tag" empty="<option value="">暂无标签</option>"}
+                            <option value="{$tag.id}">{$tag.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="col col-xs-12 col-sm-3">
+                    <div class="input-group">
+                      <span class="input-group-addon"><b>封面图</b></span>
+                      <input type="text" class="form-control" placeholder="上传文件">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-sm-12">
+                    <h3>文章摘要：</h3>
+                    <textarea name="intro" id="intro" class="form-control" rows="3" placeholder="请输入文章摘要">{$post.intro}</textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-sm-12">
+                <h3>文章内容：</h3>
+                    <!-- 创建文本编辑器 -->
+                    <div id="editor">
+                        {$post.content}
+                    </div> 
+                </div>
+            </div>
+            <div class="row btnRow">
+                <div class="col col-xs-12 col-sm-8">
+                    <button type="submit" id="postBtn" class="btn btn-primary" onclick="save()">保存更改</button>
+                </div>
+                <div class="col col-xs-12 col-sm-4">
+                    <a class="btn btn-default" href="/blog">回到我的博客</a>
+                </div>
+            </div>
+            {/if}
+            <!-- </div> -->
+<!--         </div>
+    </div> -->
+</div>
+
+
+</div>
+{/block}
+
+{block name="script"}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+<script src="__LIB__/quill/quill.js"></script>
+<script src="__LIB__/chosen/chosen.js"></script>
+
+<script>
+    var toolbarOptions = [
+      ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+      ['blockquote', 'code-block'],
+
+      [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+      [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+      [{ 'font': [] }],
+      [{ 'align': [] }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+      // [{ 'direction': 'rtl' }],                         // text direction
+
+      // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+      [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+      ['image']
+      ['clean']                                         // remove formatting button
+    ];
+
+    var quill = new Quill('#editor', {
+      modules: {
+        formula: true,
+        syntax: true,
+        toolbar: toolbarOptions
+      },
+      theme: 'snow'
+    }); 
+    function save(){
+        const title = $("input[name='title']").val();
+        const intro = $("textarea[name='intro']").val();
+        const content = $(".ql-editor").html();
+        const tagArray = $('select.chosen-select').val();
+        if(title==null||title==''||content==null||content==''){
+            alert('文章标题与内容不可为空')
+        } else {
+            var tags = '';
+            if(tagArray!==null){
+                for (var i = 0; i < tagArray.length; i++) {
+                    // 如果i+1等于选项长度则取值后添加空字符串，否则为逗号
+                    tags = (tags + tagArray[i]) + (((i + 1)== tagArray.length) ? '':',');
+                }
+            }
+            $.ajax({
+                url: '/edit/post/{$post.id}',
+                method: 'post',
+                dataType: 'json',
+                data: {
+                    'title': title,
+                    'intro': intro,
+                    'content': content,
+                    'tags': tags,
+                },
+                beforeSend:function () {
+                    $("button[id='postBtn']").attr('disabled',true);
+                    $("button[id='postBtn']").text('正在保存...');
+                },
+                success: function (data) {
+                    console.log(data)
+                    new $.zui.Messager(data.message, {
+                        type: data.status,
+                        close: true,
+                        // actions: [{
+                        //         name: 'undo',
+                        //         icon: 'undo',
+                        //         text: '撤销',
+                        //         action: function() {  // 点击该操作按钮的回调函数
+                        //             console.log('你点击了撤销按钮。');
+                        //         }
+                        //     }]
+                        }).show();
+                        if(data.status==='success'){
+                            setTimeout(function(){
+                                window.location.href = "/blog/{:session('user.id')}";
+                            },1500);
+                        }
+                    $("button[id='postBtn']").removeAttr('disabled');
+                    $("button[id='postBtn']").text('再次提交');
+                    console.log(data);
+                }
+            })
+        }
+//        alert(title+intro+content+tags);
+    };
+    $('select.chosen-select').chosen({
+        search_contains: true,
+        no_results_text: '没有找到',    // 当检索时没有找到匹配项时显示的提示文本
+        disable_search_threshold: 1, // 1 个以下的选择项则不显示检索框
+        search_contains: true,         // 从任意位置开始检索
+        allow_single_deselect: true     //允许取消单选
+    });
+    $('select.chosen-select').chosen().change(
+        function(){
+            console.log($('select.chosen-select').val())
+        }
+    );
+</script>
+{/block}

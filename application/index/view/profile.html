@@ -1,0 +1,56 @@
+{extend name="index"}
+{block name="content"}
+<div class="container sign">
+    <div class="row">
+        <div class="col col-sm-12 col-md-8 col-md-offset-2 userDetail">
+            <h1>个人资料</h1>
+            <hr />
+            <div class="row pic">
+                <div class="col col-xs-12 col-sm-6">
+                    {if($user.pic === null)}
+                    <img src="__IMG__/pic.jpg" alt="示例头像">
+                    {else/}
+                    <img src="{$user.pic}" alt="{$user.name}">
+                    {/if}
+                </div>
+                <div class="col col-xs-12 col-sm-6">
+                    <h3>修改头像</h3>
+                    <form action="/index/user/upload" enctype="multipart/form-data" method="post">
+                        <input type="file" name="image" class="form-control" /> <br> 
+                        <input type="submit" value="上传并quill-develop修改头像" class="form-control btn btn-primary"/> 
+                    </form> 
+                </div>
+            </div>
+            <form action="/profile" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="email" class="col-sm-2">电子邮件</label>
+                    <div class="col-sm-10">
+                        <input type="email" name="email" value="{$user.email}" class="form-control" id="email" placeholder="给个电邮地址吧" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2">昵称</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="name" value="{$user.name}" class="form-control" id="name" placeholder="想一个独一无二的名字" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-2 required">重设密码</label>
+                    <div class="col-sm-10">
+                        <input type="password" name="pwd" class="form-control" id="password" placeholder="重新设置一个6位以上的密码" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirm" class="col-sm-2 required">确认密码</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" id="confirm" placeholder="再输一次新密码" required />
+                    </div>
+                </div>
+                <div class="form-group fr">
+                    <button type="submit" class="btn btn-primary">确认修改</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{/block}
