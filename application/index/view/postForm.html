@@ -2,9 +2,8 @@
 {block name="link"}
 <link rel="stylesheet" href="__LIB__/chosen/chosen.css">
 <link href="__LIB__/quill/quill.snow.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css"/>
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css">
+<link rel="stylesheet" href="__LIB__/quill/katex.min.css"/>
+<link rel="stylesheet" href="__LIB__/quill/monokai-sublime.min.css"/>
 {/block}
 {block name="content"}
 <div class="container postForm">
@@ -30,7 +29,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col col-xs-12 col-sm-4">
+               <!--  <div class="col col-xs-12 col-sm-4">
                     <div class="input-group">
                     <span class="input-group-addon"><b>封面图</b></span>
                     <span class="input-group-addon">
@@ -39,10 +38,10 @@
                     <span class="input-group-addon">
                         <input type="submit" value="上传" /> 
                     </span>
-                        <!-- <form action="/index/index/upload" enctype="multipart/form-data" method="post"> -->
-                        <!-- </form>  -->
+                        <form action="/index/index/upload" enctype="multipart/form-data" method="post">
+                        </form> 
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="row">
                 <div class="col col-sm-12">
@@ -88,12 +87,12 @@
                         </select>
                     </div>
                 </div>
-                <div class="col col-xs-12 col-sm-3">
+                <!-- <div class="col col-xs-12 col-sm-3">
                     <div class="input-group">
                       <span class="input-group-addon"><b>封面图</b></span>
                       <input type="text" class="form-control" placeholder="上传文件">
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="row">
                 <div class="col col-sm-12">
@@ -129,8 +128,8 @@
 {/block}
 
 {block name="script"}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.js"></script>
-<script  src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+<script src="__LIB__/quill/katex.min.js"></script>
+<script  src="__LIB__/quill/highlight.min.js"></script>
 <script src="__LIB__/quill/quill.js"></script>
 <script src="__LIB__/chosen/chosen.js"></script>
 
@@ -151,8 +150,8 @@
       // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
 
       [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-      ['image']
-      ['clean']                                         // remove formatting button
+      ['image'],
+      ['clean'],                                        // remove formatting button
     ];
 
     var quill = new Quill('#editor', {

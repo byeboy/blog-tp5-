@@ -42,28 +42,55 @@
                     <p class="pull-right text-muted">本文在知识共享 署名-相同方式共享 3.0协议之条款下提供。</p>
                 </footer>
             </article>
-            <section class="comments">
-                <h3>所有评论：</h3>
-                <div>
-                    
-                </div>
-            </section> 
+            <div class="comments">
+                <header>
+                    <div class="pull-right"><a href="#commentReplyForm2" class="btn btn-primary"><i class="icon-comment-alt"></i> 发表评论</a></div>
+                    <h3>所有评论</h3>
+                </header>
+                <section class="comments-list">
+                    {volist name="comments" id="comment" empty="暂无评论"}
+                    <div class="comment">
+                        <!-- <a href="###" class="avatar">
+                            <i class="icon-camera-retro icon-2x"></i>
+                        </a> -->
+                        <div class="content">
+                            <div class="pull-right text-muted">{$comment->create_time}</div>
+                            <div><a href="/blog/{$comment->user->id}"><strong>{$comment->user->name}</strong></a></div>
+                            <div class="text">{$comment->content}</div>
+                            <!-- <div class="actions">
+                                <a href="##">回复</a>
+                            </div> -->
+                        </div>
+                    </div>
+                    {/volist}
+                </section>
+                <footer>
+                    <div class="reply-form" id="commentReplyForm2">
+                        {if(session('user')!==null)}
+                        <textarea name="comment" id="comment" class="form-control" rows="3" placeholder="撰写评论..."></textarea>
+                        <button onclick="comment({$post.id})" class="btn btn-block btn-primary"><i class="icon-ok"></i></button>
+                        {else /}
+                        <h4>抱歉，登录后才可评论，<a href="/login">前往登录</a></h4>
+                        {/if}
+                    </div>
+                </footer>
+            </div>
         </div>
         <div class="col col-md-3 col-sm-12 sider">
             <div class="panel panel-primary profile">
                 <div class="panel-heading">
                     {if($post.user.id === session('user.id'))}
-                    我的资料 <span class="fr"><a href="/profile" class="btn btn-success btn-sm">编辑</a></span>
+                    我的资料 <span class="fr"><a href="/profile" class="btn btn-success btn-sm">修改密码</a></span>
                     {else /}
                     关于作者
                     {/if}
                 </div>
                 <div class="panel-body">
-                    {if($post.user.pic === null)}
+                    <!-- {if($post.user.pic === null)}
                     <img src="__IMG__/pic.jpg" alt="示例头像">
                     {else/}
                     <img src="{$post.user.pic}" alt="{$post.user.name}">
-                    {/if}
+                    {/if} -->
                     {if($post.user.id === session('user.id'))}
                     <h3>昵称: {$post.user.name}</h3>
                     <p>电子邮箱: {$post.user.email}</p>
@@ -102,4 +129,48 @@
         </div>
     </div>
 </div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    function comment(postId) {
+        $(this).html('正在发表...');
+        $(this).attr('disabled', true);
+        var content = $("textarea[name='comment']").val();
+        if(content===''){
+            new $.zui.Messager('评论不可为空，请输入内容', {
+                type: 'danger',
+                close: true,
+            }).show();
+            return false;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/comment',
+            dataType: 'json',
+            data: {
+                'content': content,
+                'post_id': postId,
+            },
+            success: function (data) {
+                new $.zui.Messager(data.message, {
+                    type: data.status,
+                    close: true,
+                    // actions: [{
+                    //         name: 'undo',
+                    //         icon: 'undo',
+                    //         text: '撤销',
+                    //         action: function() {  // 点击该操作按钮的回调函数
+                    //             console.log('你点击了撤销按钮。');
+                    //         }
+                    //     }]
+                }).show();
+                if(data.status==='success'){
+                    setTimeout(function(){
+                        window.location.reload();
+                    },1500);
+                }
+            }
+        });
+    }
+</script>
 {/block}

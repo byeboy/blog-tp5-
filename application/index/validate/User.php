@@ -11,6 +11,9 @@ use think\Validate;
  */
 class User extends Validate
 {
+    /**
+     * @var array
+     */
     protected $rule = [
         'email|电子邮箱' =>  'require|email|unique:users',
         'name|昵称'  =>  'require|max:25|unique:users',

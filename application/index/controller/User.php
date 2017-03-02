@@ -17,11 +17,19 @@ use think\Validate;
 
 class User extends Controller
 {
+    /**
+     * 前置操作，认证作用
+     *
+     * @var array
+     */
     protected $beforeActionList = [
         'auth' =>  ['only'=>'logout,profile,upload'],
         'guest'  =>  ['except'=>'posts,logout,profile,upload'],
     ];
 
+    /**
+     * 用户身份认证
+     */
     public function auth()
     {
         if(session('user')===null){
@@ -29,6 +37,9 @@ class User extends Controller
         }
     }
 
+    /**
+     * 游客身份认证
+     */
     public function guest()
     {
         if(session('user')!==null){
@@ -36,6 +47,11 @@ class User extends Controller
         }
     }
 
+    /**
+     * Registe
+     *
+     * @return \think\response\Json|\think\response\View
+     */
     public function registe()
     {
         if (Request::instance()->isPost()){
@@ -86,6 +102,12 @@ class User extends Controller
         }
         return view('/registe');
     }
+
+    /**
+     * Login
+     *
+     * @return \think\response\Json|\think\response\View
+     */
     public function login()
     {
         if (Request::instance()->isPost()){
@@ -121,6 +143,12 @@ class User extends Controller
         }
         return view('/login');
     }
+
+    /**
+     * Logout
+     *
+     * @return \think\response\Json
+     */
     public function logout()
     {
         session('user', null);
@@ -137,6 +165,13 @@ class User extends Controller
             'message' => '注销失败',
         ]);
     }
+
+    /**
+     * Get a list of Posts which belongs to User(Get Blog)
+     *
+     * @param null $id
+     * @return \think\response\View|void
+     */
     public function posts($id=null)
     {
         if($id === null) {
@@ -159,24 +194,42 @@ class User extends Controller
             return $this->error('抱歉，您要访问的博客不存在');
         }
     }
+
+    /**
+     * Get a User
+     *
+     * @return \think\response\Json|\think\response\View
+     */
     public function profile()
     {
         if (Request::instance()->isPost()){
             $id = session('user.id');
             $user = Users::get($id);
             $user->pwd = input('pwd');
-            $pwd_confirm = input('pwd_confirm');
-            $validate = new Validate([
-                'pwd'  => 'require|min:6|confirm',
-            ]);
-            if(!$validate->check($user)){
-                dump($validate->getError());
+            $data = [
+                'pwd' => $user->pwd,
+                'pwd_confirm' => input('pwd_confirm'),
+            ];
+            $rule = [
+                ['pwd','require|min:6|confirm','密码不可为空|密码不得少于6位|确认密码与密码不相同'],
+            ];
+            $validate = new Validate($rule);
+            if(!$validate->check($data)){
+                // dump($validate->getError());
+                return json([
+                        'status' => 'warning',
+                        'message' => $validate->getError(),
+                    ]);
             } else {
                 $user->pwd = MD5($user->pwd);
                 if($user->save()){
                     return $this->logout();
                 }
-                return $this->error('修改信息失败');
+                // return $this->error('修改信息失败');
+                return json([
+                        'status' => 'warning',
+                        'message' => '修改信息失败',
+                    ]);
             }
         } else {
             return view('/profile',[
@@ -184,6 +237,12 @@ class User extends Controller
             ]);
         }
     }
+
+    /**
+     * Upload a pic of User
+     *
+     * @return string|void
+     */
     public function upload(){
         // 获取表单上传文件 例如上传了001.jpg
         $file = request()->file('image');

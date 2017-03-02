@@ -34,3 +34,6 @@ Route::rule('/edit/post/[:id]', 'post/edit');
 Route::rule('/del/post/:id', 'post/delete');
 
 Route::get('/tag/:id', 'tag/getPosts');
+
+Route::post('/comment', 'comment/create');
+Route::delete('/comment/:id', 'comment/delete');

@@ -15,6 +15,12 @@ use think\Controller;
 
 class Tag extends Controller
 {
+    /**
+     * Get a list of Tags
+     *
+     * @param $id
+     * @return \think\response\View
+     */
     public function getPosts($id)
     {
         $tag = Tags::get($id);

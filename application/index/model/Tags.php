@@ -12,6 +12,9 @@ use think\Model;
  */
 class Tags extends Model
 {
+    /**
+     * @return \think\model\relation\BelongsToMany
+     */
     public function posts(){
         return $this->belongsToMany('Posts', 'posts_tags');
     }

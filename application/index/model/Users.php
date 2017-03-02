@@ -12,9 +12,22 @@ use think\Model;
  */
 class Users extends Model
 {
+    /**
+     * @var array
+     */
     protected $readonly = ['name','email'];
 
+    /**
+     * @return \think\model\relation\HasMany
+     */
     public function posts(){
         return $this->hasMany('Posts', 'user_id');
+    }
+
+    /**
+     * @return \think\model\relation\HasMany
+     */
+    public function comments(){
+        return $this->hasMany('Comments', 'user_id');
     }
 }

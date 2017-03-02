@@ -49,17 +49,17 @@
             <div class="panel panel-primary profile">
                 <div class="panel-heading">
                     {if($user.id === session('user.id'))}
-                    我的资料 <span class="fr"><a href="/profile" class="btn btn-success btn-sm">编辑</a></span>
+                    我的资料 <span class="fr"><a href="/profile" class="btn btn-success btn-sm">修改密码</a></span>
                     {else /}
                     关于作者
                     {/if}
                 </div>
                 <div class="panel-body">
-                    {if($user.pic === null)}
+                    <!-- {if($user.pic === null)}
                     <img src="__IMG__/pic.jpg" alt="示例头像">
                     {else/}
                     <img src="{$user.pic}" alt="{$user.name}">
-                    {/if}
+                    {/if} -->
                     {if($user.id === session('user.id'))}
                     <h3>昵称: {$user.name}</h3>
                     <p>电子邮箱: {$user.email}</p>

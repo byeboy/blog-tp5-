@@ -49,14 +49,14 @@
             {if(session('user')!==null)}
             <div class="panel panel-primary profile">
                 <div class="panel-heading">
-                    我的资料 <span class="fr"><a href="/profile" class="btn btn-success btn-sm">编辑</a></span>
+                    我的资料 <span class="fr"><a href="/profile" class="btn btn-success btn-sm">修改密码</a></span>
                 </div>
                 <div class="panel-body">
-                    {if(session('user.pic') === null)}
+                    <!-- {if(session('user.pic') === null)}
                     <img src="__IMG__/pic.jpg" alt="示例头像">
                     {else/}
                     <img src="{:session('user.pic')}" alt="{:session('user.name')}">
-                    {/if}
+                    {/if} -->
                     <h3>昵称: {:session('user,name')}</h3>
                     <p>电子邮箱: {:session('user.email')}</p>
                 </div>

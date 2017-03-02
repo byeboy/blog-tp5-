@@ -9,6 +9,7 @@
 namespace app\index\controller;
 
 
+use app\index\model\Comments;
 use app\index\model\Posts;
 use app\index\model\Tags;
 use think\Controller;
@@ -17,10 +18,18 @@ use think\Response;
 
 class Post extends Controller
 {
+    /**
+     * 前置操作，相当于认证中间件
+     *
+     * @var array
+     */
     protected $beforeActionList = [
         'auth' =>  ['except'=>'get'],
     ];
 
+    /**
+     * 验证用户身份
+     */
     public function auth()
     {
         if(session('user')===null){
@@ -28,6 +37,9 @@ class Post extends Controller
         }
     }
 
+    /**
+     * 验证游客身份
+     */
     public function guest()
     {
         if(session('user')!==null){
@@ -35,16 +47,30 @@ class Post extends Controller
         }
     }
 
+    /**
+     * Get a Post
+     *
+     * @param $id
+     * @return \think\response\View
+     */
     public function get($id)
     {
         $post = Posts::get($id);
         $tags = Tags::all();
+        $comments = Comments::where('post_id', $id)->order('create_time', 'desc')->select();
         return view('/post',[
             'post' => $post,
             'tags' => $tags,
+            'comments' => $comments,
         ]);
     }
 
+    /**
+     * Create or Update a Post
+     *
+     * @param null $id
+     * @return \think\response\Json|\think\response\View
+     */
     public function edit($id=null)
     {
         if(Request::instance()->isPost()){
@@ -110,6 +136,12 @@ class Post extends Controller
         }
     }
 
+    /**
+     * Delete a Post
+     *
+     * @param $id
+     * @return \think\response\Json
+     */
     public function delete($id)
     {
         if(Posts::destroy($id)){

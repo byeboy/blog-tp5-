@@ -5,7 +5,7 @@
         <div class="col col-sm-12 col-md-8 col-md-offset-2 userDetail">
             <h1>个人资料</h1>
             <hr />
-            <div class="row pic">
+            <!-- <div class="row pic">
                 <div class="col col-xs-12 col-sm-6">
                     {if($user.pic === null)}
                     <img src="__IMG__/pic.jpg" alt="示例头像">
@@ -17,10 +17,10 @@
                     <h3>修改头像</h3>
                     <form action="/index/user/upload" enctype="multipart/form-data" method="post">
                         <input type="file" name="image" class="form-control" /> <br> 
-                        <input type="submit" value="上传并quill-develop修改头像" class="form-control btn btn-primary"/> 
+                        <input type="submit" value="上传并修改头像" class="form-control btn btn-primary"/> 
                     </form> 
                 </div>
-            </div>
+            </div> -->
             <form action="/profile" method="post" class="form-horizontal">
                 <div class="form-group">
                     <label for="email" class="col-sm-2">电子邮件</label>
@@ -41,9 +41,9 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="confirm" class="col-sm-2 required">确认密码</label>
+                    <label for="pwd_confirm" class="col-sm-2 required">确认密码</label>
                     <div class="col-sm-10">
-                        <input type="password" class="form-control" id="confirm" placeholder="再输一次新密码" required />
+                        <input type="password" name="pwd_confirm" class="form-control" id="pwd_confirm" placeholder="再输一次新密码" required />
                     </div>
                 </div>
                 <div class="form-group fr">
@@ -53,4 +53,48 @@
         </div>
     </div>
 </div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    $('form').submit(function(){
+        var button = $(this).find("button[type='submit']");
+        button.attr('disabled', true);
+        button.html('正在修改...');
+        var pwd = $("input[name='pwd']").val();
+        var pwd_confirm = $("input[name='pwd_confirm']").val();
+        var method = $(this).attr('method');
+        var action = $(this).attr('action');
+        $.ajax({
+            type: method,
+            url: action,
+            dataType: 'json',
+            data: {
+                'pwd': pwd,
+                'pwd_confirm': pwd_confirm,
+            },
+            success: function(data){
+                new $.zui.Messager(data.message, {
+                    type: data.status,
+                    close: true,
+                    // actions: [{
+                    //         name: 'undo',
+                    //         icon: 'undo',
+                    //         text: '撤销',
+                    //         action: function() {  // 点击该操作按钮的回调函数
+                    //             console.log('你点击了撤销按钮。');
+                    //         }
+                    //     }]
+                    }).show();
+                    button.removeAttr('disabled');
+                    button.html('确认修改');
+                if(data.status === 'success'){
+                    setTimeout(function(){
+                        window.location.href='/';
+                    },1000);
+                }
+            },
+        });
+        return false;
+    })
+</script>
 {/block}

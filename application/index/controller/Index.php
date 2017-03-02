@@ -6,19 +6,16 @@ use think\Controller;
 
 class Index extends Controller
 {
+    /**
+     * Get a list of Posts
+     *
+     * @return \think\response\View
+     */
     public function index()
     {
         $posts = Posts::order('update_time', 'desc')->select();
         return view('/index',[
             'posts' => $posts,
         ]);
-    }
-    public function registe()
-    {
-        return view('/registe');
-    }
-    public function login()
-    {
-        return view('/login');
     }
 }
