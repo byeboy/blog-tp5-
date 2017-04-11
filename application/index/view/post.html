@@ -1,4 +1,4 @@
-{extend name="index"}
+{extend name="blog"}
 {block name="content"}
 <div class="container">
     <div class="row">
@@ -20,7 +20,6 @@
                             {volist name="post->tags" id="tag" length="" empty="<span class='label label-danger'>暂无标签</span>"}
                             <a href="/tag/{$tag.id}" class="label label-success">{$tag.name}</a>
                             {/volist}
-                            <span class="label label-warning"><i class="icon-eye-open"></i> 235</span>
                         </dd>
                     </dl>
                     <h1>{$post.title}</h1>
@@ -54,12 +53,33 @@
                             <i class="icon-camera-retro icon-2x"></i>
                         </a> -->
                         <div class="content">
-                            <div class="pull-right text-muted">{$comment->create_time}</div>
+                            <div class="pull-right text-muted">{$comment.create_time}</div>
                             <div><a href="/blog/{$comment->user->id}"><strong>{$comment->user->name}</strong></a></div>
-                            <div class="text">{$comment->content}</div>
-                            <!-- <div class="actions">
-                                <a href="##">回复</a>
-                            </div> -->
+                            <div class="text">{$comment.content}</div>
+                            {if($comment->comments)}
+                            <div class="comments-list">
+                                {volist name="$comment->comments" id="comment" }
+                                <div class="comment" style="margin-left: 50px">
+                                    <div class="content">
+                                        <div class="pull-right text-muted">
+                                            {$comment.create_time}
+                                        </div>
+                                        <div>
+                                            <a href="/blog/{$comment->user->id}">
+                                                <strong>{$comment->user->name}</strong>
+                                            </a>
+                                        </div>
+                                        <div class="text">{$comment.content}</div>
+                                    </div>
+                                </div>
+                                {/volist}
+                            </div>
+                            {elseif(session('user.id') === $post.user.id && session('user.id') !== $comment.user_id) /}
+                            <div>
+                                <textarea name="comment" id="reply" class="form-control" rows="3" placeholder="回复评论"></textarea>
+                                <button onclick="comment({$post.id}, {$comment.id}, this)" class="btn btn-block btn-primary"><i class="icon-ok"></i></button>
+                            </div>
+                            {/if}
                         </div>
                     </div>
                     {/volist}
@@ -67,8 +87,10 @@
                 <footer>
                     <div class="reply-form" id="commentReplyForm2">
                         {if(session('user')!==null)}
-                        <textarea name="comment" id="comment" class="form-control" rows="3" placeholder="撰写评论..."></textarea>
-                        <button onclick="comment({$post.id})" class="btn btn-block btn-primary"><i class="icon-ok"></i></button>
+                        <div>
+                            <textarea name="comment" id="comment" class="form-control" rows="3" placeholder="撰写评论..."></textarea>
+                            <button onclick="comment({$post.id}, null, this)" class="btn btn-block btn-primary"><i class="icon-ok"></i></button>
+                        </div>
                         {else /}
                         <h4>抱歉，登录后才可评论，<a href="/login">前往登录</a></h4>
                         {/if}
@@ -91,13 +113,13 @@
                     {else/}
                     <img src="{$post.user.pic}" alt="{$post.user.name}">
                     {/if} -->
-                    {if($post.user.id === session('user.id'))}
-                    <h3>昵称: {$post.user.name}</h3>
-                    <p>电子邮箱: {$post.user.email}</p>
+                    <h3><a href="/blog/{$user.id}">昵称: {$user.name}</h3>
+                    {if($user.id === session('user.id'))}
+                    <p>电子邮箱: {$user.email}</p>
+                    <p><a href="/user/pics/{:session('user.id')}">图片管理</a></p>
                     {else /}
-                    <p>昵称: {$post.user.name}</p>
-                    <p><a href="mailto:{$post.user.email}" class="btn btn-success btn-sm"><i class="icon icon-envelope"></i>发送邮件</a></p>
-                    {/if}
+                    <p><a href="mailto:{$user.email}" class="btn btn-success btn-sm"><i class="icon icon-envelope"></i>发送邮件</a></p>
+                    <p><a href="/user/pics/{$user.id}">博主图片</a></p>
                 </div>
             </div>
             <div class="panel panel-info">
@@ -132,10 +154,8 @@
 {/block}
 {block name="script"}
 <script type="text/javascript">
-    function comment(postId) {
-        $(this).html('正在发表...');
-        $(this).attr('disabled', true);
-        var content = $("textarea[name='comment']").val();
+    function comment(postId, commentId, obj) {
+        var content = $(obj).prev().val();
         if(content===''){
             new $.zui.Messager('评论不可为空，请输入内容', {
                 type: 'danger',
@@ -150,6 +170,11 @@
             data: {
                 'content': content,
                 'post_id': postId,
+                'comment_id': commentId,
+            },
+            beforeSend: function(){
+                $(obj).html('正在发表...');
+                $(obj).attr('disabled', true);
             },
             success: function (data) {
                 new $.zui.Messager(data.message, {
@@ -169,6 +194,8 @@
                         window.location.reload();
                     },1500);
                 }
+                $(obj).html('<i class="icon-ok"></i>');
+                $(obj).attr('disabled', false);
             }
         });
     }

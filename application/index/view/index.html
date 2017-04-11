@@ -29,16 +29,17 @@
                     <a class="navbar-brand" href="/">ITHINK</a>
                 </div>
                 <div class="collapse navbar-collapse navbar-collapse-example">
-                    <input type="search" id="nav-search" class="navbar-left form-control" placeholder="请在此搜索..."/>
+                    <!--<input type="search" id="nav-search" class="navbar-left form-control" placeholder="请在此搜索..."/>-->
                     <!-- 右侧的导航项目 -->
                     <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/pics">站点图片</a></li>
                         {if(session('user')!==null)}
                         <li><a href="/edit/post/"><i class="icon icon-plus"></i>发布文章</a></li>
                         <li class="dropdown">
                             <a href="" class="dropdown-toggle" data-toggle="dropdown">{:session('user.name')}<b class="caret"></b></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="/blog">我的ITHINK</a></li>
-                                <li><a href="/messages">最新消息</a></li>
+                                <li><a href="/user/pics/{:session('user.id')}">图片管理</a></li>
                                 <li><a href="javascript:void(0);" onclick="logout()">注销</a></li>
                             </ul>
                         </li>
@@ -211,7 +212,7 @@
 {/block}
 </body>
     <!-- ZUI Javascript 依赖 jQuery -->
-    <script src="__LIB__/jquery/jquery.js"></script>
+    <script src="__LIB__/jquery/jquery-3.2.0.min.js"></script>
     <!-- ZUI 标准版压缩后的 JavaScript 文件 -->
     <script src="__JS__/zui.js"></script>
     <script type="text/javascript">

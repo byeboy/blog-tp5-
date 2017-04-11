@@ -19,6 +19,10 @@ class Comments extends Model
         return $this->belongsTo('Posts', 'post_id');
     }
 
+    public function comments(){
+        return $this->hasMany('Comments', 'comment_id');
+    }
+
     /**
      * @return \think\model\relation\BelongsTo
      */

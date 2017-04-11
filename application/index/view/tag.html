@@ -59,6 +59,7 @@
                     {/if} -->
                     <h3>昵称: {:session('user,name')}</h3>
                     <p>电子邮箱: {:session('user.email')}</p>
+                    <p><a href="/user/pics/{:session('user.email')}">我的图片</a></p>
                 </div>
             </div>
             {/if}

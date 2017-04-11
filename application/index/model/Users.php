@@ -17,6 +17,10 @@ class Users extends Model
      */
     protected $readonly = ['name','email'];
 
+    public function bgms(){
+        return $this->hasMany('Musics', 'user_id');
+    }
+
     /**
      * @return \think\model\relation\HasMany
      */

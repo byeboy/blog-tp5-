@@ -56,9 +56,11 @@ class Post extends Controller
     public function get($id)
     {
         $post = Posts::get($id);
+        $user = $post->user();
         $tags = Tags::all();
-        $comments = Comments::where('post_id', $id)->order('create_time', 'desc')->select();
+        $comments = Comments::where('post_id', $id)->where('comment_id', null)->order('create_time', 'desc')->select();
         return view('/post',[
+            'user' => $user,
             'post' => $post,
             'tags' => $tags,
             'comments' => $comments,

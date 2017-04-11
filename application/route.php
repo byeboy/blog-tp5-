@@ -35,5 +35,12 @@ Route::rule('/del/post/:id', 'post/delete');
 
 Route::get('/tag/:id', 'tag/getPosts');
 
+Route::get('/pics', 'pic/index');
+Route::rule('/del/pic/:id', 'pic/delete');
+Route::get('/user/pics/:id', 'pic/getByUser');
+
+Route::rule('/upload/pic', 'pic/upload');
+Route::rule('/upload/bgm', 'music/upload');
+
 Route::post('/comment', 'comment/create');
 Route::delete('/comment/:id', 'comment/delete');

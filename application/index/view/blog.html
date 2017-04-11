@@ -1,40 +1,132 @@
-{extend name="index"}
-{block name="content"}
-<div class="container">
-    <div class="row">
-        <div class="col col-md-9 col-sm-12 list">
-            {volist name="posts" id="post" empty="<h1>抱歉，暂无博文</h1>"}
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- ZUI 标准版压缩后的 CSS 文件 -->
+    <link rel="stylesheet" href="__CSS__/zui.css">
+    <link rel="stylesheet" href="__CSS__/zui-theme.css">
+    <link rel="stylesheet" href="__CSS__/style.min.css">
+    <!-- ZUI Javascript 依赖 jQuery -->
+    <!-- <link type="text/css" href="__CSS__/skin/blue.monday/css/jplayer.blue.monday.css" rel="stylesheet" />
+    
+    <script src="__JS__/jquery.jplayer.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $("#jquery_jplayer_1").jPlayer({
+            ready: function() {
+                $(this).jPlayer("setMedia", {
+                    title: "Bubble",
+                    m4a: "http://www.jplayer.org/audio/m4a/Miaow-07-Bubble.m4a",
+                    oga: "http://www.jplayer.org/audio/ogg/Miaow-07-Bubble.ogg"
+                });
+            },
+            cssSelectorAncestor: "#jp_container_1",
+            swfPath: "/js",
+            supplied: "m4a, oga",
+            useStateClassSkin: true,
+            autoBlur: false,
+            smoothPlayBar: true,
+            keyEnabled: true,
+            remainingDuration: true,
+            toggleDuration: true
+        });
+    });
+    </script> -->
+    {block name="link"}{/block}
+    <title>ITHINK</title>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <!-- 移动设备上的导航切换按钮 -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-example">
+                    <span class="sr-only">切换导航</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">ITHINK</a>
+                </div>
+                <div class="collapse navbar-collapse navbar-collapse-example">
+                    <!--<input type="search" id="nav-search" class="navbar-left form-control" placeholder="请在此搜索..." />-->
+                    <!-- 右侧的导航项目 -->
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <audio controls="controls" loop autoplay="autoplay">
+                                {volist name="user->bgms" id="bgm"}
+                                <source src="{$bgm.path}" type="audio/mpeg">
+                                {/volist}
+                            </audio>
+                        </li>
+                        {if(session('user')!==null)}
+                        <li><a href="/edit/post/"><i class="icon icon-plus"></i>发布文章</a></li>
+                        <li class="dropdown">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown">{:session('user.name')}<b class="caret"></b></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="/blog">我的ITHINK</a></li>
+                                <li><a href="/user/pics/{:session('user.id')}">图片管理</a></li>
+                                <li><a href="javascript:void(0);" onclick="logout()">注销</a></li>
+                            </ul>
+                        </li>
+                        {else /}
+                        <li><a href="/login"><i class="icon icon-signin "></i>登录</a></li>
+                        <li><a href="/registe"><i class="icon icon-edit"></i>注册</a></li>
+                        {/if}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- <div class="MusicList">  //媒体文件列表区域
+        <div class="Author"></div> //当前媒体文件的
+        <div class="List"> //媒体文件列表
+
+        <div class="Single" > //单个媒体文件
+        <span class="SongName"  KV="Fate" >01.Fate</span>
+        </div> 
+        </div>
+        </div> -->
+    </header>
+    {block name="content"}
+    <div class="container">
+        <div class="row">
+            <div class="col col-md-9 col-sm-12 list">
+                {volist name="posts" id="post" empty="
+                <h1>抱歉，暂无博文</h1>"}
                 <article>
                     <section>
                         <header>
                             <h1>
-                                <a href="/post/{$post.id}">{$post.title}</a>
-                                <span class="fr action">
-                                    {if(session('user')!==null && session('user.id')===$post.user.id)}
-                                    <div class="pull-right">
-                                        <a href="/edit/post/{$post.id}"><i class="icon-pencil"></i>编辑</a> &nbsp;<a class="del" href="javascript:void(0);" onclick="del({$post.id})"><i class="icon-remove"></i>删除</a>
-                                    </div>
-                                    {/if}
-                                </span>
-                            </h1>
+                                    <a href="/post/{$post.id}">{$post.title}</a>
+                                    <span class="fr action">
+                                        {if(session('user')!==null && session('user.id')===$post.user.id)}
+                                        <div class="pull-right">
+                                            <a href="/edit/post/{$post.id}"><i class="icon-pencil"></i>编辑</a> &nbsp;<a class="del" href="javascript:void(0);" onclick="del({$post.id})"><i class="icon-remove"></i>删除</a>
+                                        </div>
+                                        {/if}
+                                    </span>
+                                </h1>
                             <p>
-                                <i class="icon icon-tag"></i>
-                                {volist name="post->tags" id="tag" length="4" empty="<span class='label label-danger'>暂无标签</span>"}
-                                <a href="/tag/{$tag.id}" class="label label-success">{$tag.name}</a>
-                                {/volist}
+                                <i class="icon icon-tag"></i> {volist name="post->tags" id="tag" length="4" empty="<span class='label label-danger'>暂无标签</span>"}
+                                <a href="/tag/{$tag.id}" class="label label-success">{$tag.name}</a> {/volist}
                                 <span class="fr"><a href="#" class="text-muted"><i class="icon-comments"></i> 243</a></span>
                             </p>
                         </header>
                         <h3>
-                            摘要：{if($post.intro!==null)}
-                                {$post.intro}
-                                {else/}
-                                暂无摘要
-                                {/if}
-                        </h3>
+                                摘要：{if($post.intro!==null)}
+                                    {$post.intro}
+                                    {else/}
+                                    暂无摘要
+                                    {/if}
+                            </h3>
                         <!-- <section>
-                            {$post.content}
-                        </section> -->
+                                {$post.content}
+                            </section> -->
                         <footer>
                             <p>
                                 本文由<a href="/blog/{$post.user.id}">{$post.user.name}</a> 发布于：{$post.update_time}
@@ -43,93 +135,197 @@
                         </footer>
                     </section>
                 </article>
-            {/volist}
-        </div>
-        <div class="col col-md-3 col-sm-12 sider">
-            <div class="panel panel-primary profile">
-                <div class="panel-heading">
-                    {if($user.id === session('user.id'))}
-                    我的资料 <span class="fr"><a href="/profile" class="btn btn-success btn-sm">修改密码</a></span>
-                    {else /}
-                    关于作者
-                    {/if}
-                </div>
-                <div class="panel-body">
-                    <!-- {if($user.pic === null)}
-                    <img src="__IMG__/pic.jpg" alt="示例头像">
-                    {else/}
-                    <img src="{$user.pic}" alt="{$user.name}">
-                    {/if} -->
-                    {if($user.id === session('user.id'))}
-                    <h3>昵称: {$user.name}</h3>
-                    <p>电子邮箱: {$user.email}</p>
-                    {else /}
-                    <p>昵称: {$user.name}</p>
-                    <p><a href="mailto:{$user.email}" class="btn btn-success btn-sm"><i class="icon icon-envelope"></i>发送邮件</a></p>
-                    {/if}
-                </div>
+                {/volist}
             </div>
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    近期文章
-                </div>
-                <div class="panel-body">
-                    <section class="items">
-                    {volist name="posts" id="post" length="7" empty="<h3>抱歉，暂无文章</h3>"}
-                        <div class="item">
-                            <a href="/post/{$post.id}">{$post.title}</a>
-                        </div>
-                    {/volist}
-                    </section>
-                </div>
-            </div>
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    热门标签
-                </div>
-                <div class="panel-body">
-                    {volist name="tags" id="tag" length="39" empty="<h3>抱歉，暂无标签</h3>"}
-                    <div class="item">
-                        <a href="/tag/{$tag.id}" class="label label-success">{$tag.name}</a>
+            <div class="col col-md-3 col-sm-12 sider">
+                <div class="panel panel-primary profile">
+                    <div class="panel-heading">
+                        {if($user.id === session('user.id'))} 我的资料 <span class="fr"><a href="/profile" class="btn btn-success btn-sm">信息修改</a></span> {else /} 关于作者 {/if}
                     </div>
-                    {/volist}
+                    <div class="panel-body">
+                        <!-- {if($user.pic === null)}
+                        <img src="__IMG__/pic.jpg" alt="示例头像">
+                        {else/}
+                        <img src="{$user.pic}" alt="{$user.name}">
+                        {/if} -->
+                        <h3><a href="/blog/{$user.id}">昵称: {$user.name}</h3>
+                        {if($user.id === session('user.id'))}
+                        <p>电子邮箱: {$user.email}</p>
+                        <p><a href="/user/pics/{:session('user.id')}">图片管理</a></p>
+                        {else /}
+                        <p><a href="mailto:{$user.email}" class="btn btn-success btn-sm"><i class="icon icon-envelope"></i>发送邮件</a></p>
+                        <p><a href="/user/pics/{$user.id}">博主图片</a></p>
+                        {/if}
+                    </div>
+                </div>
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        近期文章
+                    </div>
+                    <div class="panel-body">
+                        <section class="items">
+                            {volist name="posts" id="post" length="7" empty="
+                            <h3>抱歉，暂无文章</h3>"}
+                            <div class="item">
+                                <a href="/post/{$post.id}">{$post.title}</a>
+                            </div>
+                            {/volist}
+                        </section>
+                    </div>
+                </div>
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        热门标签
+                    </div>
+                    <div class="panel-body">
+                        {volist name="tags" id="tag" length="39" empty="
+                        <h3>抱歉，暂无标签</h3>"}
+                        <div class="item">
+                            <a href="/tag/{$tag.id}" class="label label-success">{$tag.name}</a>
+                        </div>
+                        {/volist}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-{/block}
+    {/block} {block name="footer"}
+    <footer class="end">
+        <div class="container">
+            <div class="row">
+                <div class="col col-md-4 col-sm-12">
+                    <div>
+                        <div>
+                            <div class="card section fade scale slide-in-up-100 slide-in-right-50 show in">
+                                <div class="card-heading" title="开发环境详情">
+                                    <i class="icon icon-node"></i>
+                                    <span class="name">开发环境详情</span>
+                                </div>
+                                <div class="card-content">
+                                    <ul>
+                                        <li><b>SYSTEM : </b>WINDOWS / LINUX</li>
+                                        <li><b>APACHE : </b>2.4</li>
+                                        <li><b>PHP : </b>7.1.0</li>
+                                        <li><b>MYSQL : </b>5.7.17</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-md-4 col-sm-12">
+                    <div>
+                        <div>
+                            <div class="card section fade scale slide-in-up-100 slide-in-right-50 show in">
+                                <div class="card-heading" title="开发语言及框架选择">
+                                    <!--<i class="icon icon-flag"></i>-->
+                                    <i class="icon icon-flag"></i>
+                                    <span>开发语言及框架选择</span>
+                                </div>
+                                <div class="card-content">
+                                    <ul>
+                                        <li><b>前端语言 :</b>HTML+CSS+JS</li>
+                                        <li><b>后台技术 :</b>PHP</li>
+                                        <li><b>前端框架 :</b><a href="http://zui.sexy/" target="_blank">ZUI</a></li>
+                                        <li><b>后台框架 :</b><a href="http://www.thinkphp.cn/" target="_blank">ThinkPHP 5.0</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-md-4 col-sm-12">
+                    <div>
+                        <div>
+                            <div class="card section fade scale slide-in-up-100 slide-in-right-50 show in">
+                                <div class="card-heading" title="项目指导及参考">
+                                    <i class="icon icon-coffee"></i>
+                                    <span>项目指导及参考</span>
+                                </div>
+                                <div class="card-content">
+                                    <ul>
+                                        <li><b>指导老师 :</b>李广丽 教授</li>
+                                        <li><b>参考文档 :</b>相关开发手册</li>
+                                        <li><b>参考视频 :</b>ThinkPHP5视频教程</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid copyright">
+            CopyRights © 2016-2017 Yujing Jiang ,. ITHINK--基于ThinkPHP的简易博客群 .
+        </div>
+    </footer>
+    {/block}
+</body>
+<!-- ZUI 标准版压缩后的 JavaScript 文件 -->
+<script src="__LIB__/jquery/jquery-3.2.0.min.js"></script>
+<script src="__JS__/zui.js"></script>
+<script type="text/javascript">
+function logout() {
+    $.ajax({
+        type: 'post',
+        url: '/logout',
+        dataType: 'json',
+        data: {},
+        success: function(data) {
+            new $.zui.Messager(data.message, {
+                type: data.status,
+                close: true,
+                // actions: [{
+                //         name: 'undo',
+                //         icon: 'undo',
+                //         text: '撤销',
+                //         action: function() {  // 点击该操作按钮的回调函数
+                //             console.log('你点击了撤销按钮。');
+                //         }
+                //     }]
+            }).show();
+            if (data.status === 'success') {
+                setTimeout(function() {
+                    window.location.href = '/';
+                }, 1500);
+            }
+        },
+    });
+}
+</script>
 {block name="script"}
 <script type="text/javascript">
-    function del(id){
-        console.log(id)
-        var delUrl = '/del/post/'+id;
-        $.ajax({
-            type: 'GET',
-            url: delUrl,
-            dataType: 'json',
-            data: {},
-            success: function(data){
-                console.log(data)
-                new $.zui.Messager(data.message, {
-                    type: data.status,
-                    close: true,
-                    // actions: [{
-                    //         name: 'undo',
-                    //         icon: 'undo',
-                    //         text: '撤销',
-                    //         action: function() {  // 点击该操作按钮的回调函数
-                    //             console.log('你点击了撤销按钮。');
-                    //         }
-                    //     }]
-                    }).show();
-                    if(data.status==='success'){
-                        setTimeout(function(){
-                            window.location.href = "/blog/{:session('user.id')}";
-                        },1500);
-                    }
-                },
-            });
-    }
+function del(id) {
+    console.log(id)
+    var delUrl = '/del/post/' + id;
+    $.ajax({
+        type: 'GET',
+        url: delUrl,
+        dataType: 'json',
+        data: {},
+        success: function(data) {
+            console.log(data)
+            new $.zui.Messager(data.message, {
+                type: data.status,
+                close: true,
+                // actions: [{
+                //         name: 'undo',
+                //         icon: 'undo',
+                //         text: '撤销',
+                //         action: function() {  // 点击该操作按钮的回调函数
+                //             console.log('你点击了撤销按钮。');
+                //         }
+                //     }]
+            }).show();
+            if (data.status === 'success') {
+                setTimeout(function() {
+                    window.location.href = "/blog/{:session('user.id')}";
+                }, 1500);
+            }
+        },
+    });
+}
 </script>
 {/block}
+
+</html>

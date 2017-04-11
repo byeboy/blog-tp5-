@@ -1,0 +1,117 @@
+{extend name="index"}
+{block name="link"}
+<link href="__LIB__/uploader/zui.uploader.min.css" rel="stylesheet">
+{/block}
+{block name="content"}
+<div class="container" style="margin-top: 20px">
+    {if($userId !== null && session('user.id') === $userId)}
+    <div class="uploader">
+        <form id="uploadImg" enctype="multipart/form-data">
+            <input type="file" multiple="multiple" name="images[]"
+                   class="form-control"
+                   accept="image/jpg,image/png,image/gif"
+            />
+            <button type="submit" class="btn btn-link uploader-btn-start" onclick="upload(this)">
+                <i class="icon icon-cloud-upload"></i> 开始上传
+            </button>
+        </form>
+    </div>
+    {/if}
+    <div class="row">
+    {volist name="pics" id="pic" empty="<h1>抱歉，暂无图片</h1>"}
+        <div class="col col-xs-12 col-sm-6 col-md-3">
+            <img data-toggle="lightbox" src="{$pic.path}" data-image="{$pic.path}" data-caption="{$pic.name}" class="lightbox-toggle img-thumbnail" alt="{$pic.name}" width="100%">
+            {if($userId != null && session('user')!==null) && (session('user.id')===$pic.user_id)}
+            <a class="del" href="javascript:void(0);" onclick="del({$pic.id})"><i class="icon-remove"></i>删除</a>
+            {/if}
+        </div>
+    {/volist}
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script src="__LIB__/jquery/jquery.form.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('img.lightbox-toggle').lightbox();
+
+    });
+    function upload(obj) {
+        var images = $("input[type='file']").val();
+        var uploadUrl = '/upload/pic/';
+        if(images === '' || images === null) {
+            new $.zui.Messager('上传图片不可为空', {
+                type: 'warning',
+                close: true,
+            }).show();
+            return false;
+        }
+        var formData = new FormData($("#uploadImg")[0]);
+        $.ajax({
+            url: uploadUrl,
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $(obj).html('正在上传...');
+                $(obj).attr('disabled', true);
+            },
+            success: function(data) {
+                console.log(data)
+                if (data.status === 'success') {
+                    new $.zui.Messager(data.message, {
+                        type: data.status,
+                        close: true,
+                    }).show();
+                    setTimeout(function() {
+                        window.location.href = "/user/pics/{:session('user.id')}";
+                    }, 1500);
+                } else if (data.status === 'warning') {
+                    data.message.map(function(m) {
+                        new $.zui.Messager(m, {
+                            type: data.status,
+                            time: 100000,
+                            close: true,
+                        }).show();
+                    });
+                    $(obj).html('<i class="icon icon-cloud-upload"></i> 开始上传');
+                    $(obj).attr('disabled', false);
+                }
+            }
+        });
+    };
+    function del(id) {
+        var delUrl = '/del/pic/' + id;
+        $.ajax({
+            type: 'GET',
+            url: delUrl,
+            dataType: 'json',
+            data: {},
+            success: function(data) {
+                console.log(data)
+                new $.zui.Messager(data.message, {
+                    type: data.status,
+                    close: true,
+                    // actions: [{
+                    //         name: 'undo',
+                    //         icon: 'undo',
+                    //         text: '撤销',
+                    //         action: function() {  // 点击该操作按钮的回调函数
+                    //             console.log('你点击了撤销按钮。');
+                    //         }
+                    //     }]
+                }).show();
+                if (data.status === 'success') {
+                    setTimeout(function() {
+                        window.location.href = "/user/pics/{:session('user.id')}";
+                    }, 1500);
+                }
+            },
+        });
+    }
+</script>
+{/block}
